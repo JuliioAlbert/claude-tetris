@@ -1,0 +1,65 @@
+name: Claude Issue Triage
+
+on:
+  issues:
+    types: [opened, edited]
+
+concurrency:
+  group: claude-triage-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude Issue Triage
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Eres responsable del triage del issue #${{ github.event.issue.number }}
+            de este repositorio (un juego de Tetris en JavaScript vanilla con tres archivos:
+            game.js — toda la lógica del juego, index.html — estructura DOM y canvas,
+            style.css — estilos retro/dark).
+
+            Realiza estos pasos en orden:
+
+            1. Lee el issue completo con:
+               gh issue view ${{ github.event.issue.number }} --repo ${{ github.repository }}
+
+            2. Lista las etiquetas disponibles del repositorio con:
+               gh label list --repo ${{ github.repository }}
+
+            3. Elige SOLO entre las etiquetas existentes las que apliquen al issue y
+               aplícalas con (una por una si son varias):
+               gh issue edit ${{ github.event.issue.number }} --repo ${{ github.repository }} --add-label "nombre-etiqueta"
+               IMPORTANTE: No inventes etiquetas nuevas. Si ninguna aplica, no apliques ninguna.
+
+            4. Publica UN comentario de diagnóstico en español con:
+               gh issue comment ${{ github.event.issue.number }} --repo ${{ github.repository }} --body "..."
+
+               El comentario debe incluir estas secciones:
+               ## 🔍 Diagnóstico
+               **Resumen:** breve descripción del problema o solicitud.
+
+               **Causa probable / Área afectada:** dónde y por qué ocurre el problema,
+               referenciando funciones concretas del código si aplica (ej: `tryRotate()`,
+               `lockPiece()`, `draw()`, `collide()`, etc.).
+
+               **Archivos relevantes:** lista de archivos del repo involucrados
+               (game.js, index.html y/o style.css según corresponda).
+
+               **Enfoque de solución sugerido:** pasos concretos y concisos para
+               implementar la solución después.
+
+               Sé técnico y conciso. No modifiques el código ni el cuerpo del issue.
+          claude_args: '--allowed-tools "Bash(gh label list:*),Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*)"'
