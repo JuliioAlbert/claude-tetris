@@ -62,4 +62,7 @@ jobs:
                implementar la solución después.
 
                Sé técnico y conciso. No modifiques el código ni el cuerpo del issue.
+               El comentario debe estar escrito en Markdown válido compatible con GitHub
+               (encabezados con #/##/###, negrita con **texto**, código inline con `backticks`,
+               bloques de código con triple backtick, listas con - o 1.). No uses HTML.
           claude_args: '--allowed-tools "Bash(gh label list:*),Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*)"'
