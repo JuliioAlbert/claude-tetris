@@ -4,15 +4,47 @@
   padding: 0;
 }
 
+/* ---- Theme variables (dark by default) ---- */
+:root {
+  --bg-body: #0f0f17;
+  --color-text: #e0e0e0;
+  --bg-surface: #1a1a25;
+  --border-color: #2a2a3a;
+  --color-accent: #7aa2f7;
+  --color-label: #555570;
+  --bg-kbd: #22223a;
+  --border-kbd: #3a3a5a;
+  --color-kbd: #aaa;
+  --color-controls: #888;
+  --overlay-bg: rgba(10, 10, 20, 0.75);
+  --title-shadow: 0 0 20px rgba(122, 162, 247, 0.5), 0 0 40px rgba(122, 162, 247, 0.2);
+}
+
+body.light-theme {
+  --bg-body: #f0f0f8;
+  --color-text: #1a1a2e;
+  --bg-surface: #dcdcf0;
+  --border-color: #b4b4cc;
+  --color-accent: #3a6be0;
+  --color-label: #888899;
+  --bg-kbd: #d0d0e8;
+  --border-kbd: #a8a8c0;
+  --color-kbd: #333355;
+  --color-controls: #666677;
+  --overlay-bg: rgba(200, 200, 220, 0.85);
+  --title-shadow: 0 0 20px rgba(58, 107, 224, 0.3), 0 0 40px rgba(58, 107, 224, 0.1);
+}
+
 body {
-  background: #0f0f17;
-  color: #e0e0e0;
+  background: var(--bg-body);
+  color: var(--color-text);
   font-family: system-ui, -apple-system, sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   user-select: none;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 .wrapper {
@@ -28,10 +60,11 @@ body {
   font-size: 42px;
   font-weight: 900;
   letter-spacing: 14px;
-  color: #7aa2f7;
-  text-shadow: 0 0 20px rgba(122, 162, 247, 0.5), 0 0 40px rgba(122, 162, 247, 0.2);
+  color: var(--color-accent);
+  text-shadow: var(--title-shadow);
   text-transform: uppercase;
   margin: 0;
+  transition: color 0.4s ease, text-shadow 0.4s ease;
 }
 
 .game-container {
@@ -42,10 +75,11 @@ body {
 
 #board {
   display: block;
-  border: 1px solid #2a2a3a;
-  background: #1a1a25;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
   border-radius: 4px;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+  transition: background 0.4s ease, border-color 0.4s ease;
 }
 
 /* ---- Panel lateral ---- */
@@ -66,23 +100,26 @@ body {
 .label {
   font-size: 10px;
   letter-spacing: 2px;
-  color: #555570;
+  color: var(--color-label);
   font-weight: 600;
+  transition: color 0.4s ease;
 }
 
 .value {
   font-family: 'Courier New', Courier, monospace;
   font-size: 26px;
   font-weight: 700;
-  color: #7aa2f7;
+  color: var(--color-accent);
   letter-spacing: 1px;
+  transition: color 0.4s ease;
 }
 
 #next-canvas {
   display: block;
-  border: 1px solid #2a2a3a;
-  background: #1a1a25;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
   border-radius: 4px;
+  transition: background 0.4s ease, border-color 0.4s ease;
 }
 
 /* ---- Controles ---- */
@@ -95,20 +132,55 @@ body {
 
 .controls li {
   font-size: 12px;
-  color: #888;
+  color: var(--color-controls);
   display: flex;
   align-items: center;
   gap: 4px;
+  transition: color 0.4s ease;
 }
 
 kbd {
-  background: #22223a;
-  border: 1px solid #3a3a5a;
+  background: var(--bg-kbd);
+  border: 1px solid var(--border-kbd);
   border-radius: 3px;
   padding: 1px 6px;
   font-size: 11px;
   font-family: inherit;
-  color: #aaa;
+  color: var(--color-kbd);
+  transition: background 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+}
+
+/* ---- Theme toggle ---- */
+@keyframes theme-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+#theme-toggle {
+  width: 100%;
+  background: var(--bg-kbd);
+  border: 1px solid var(--border-kbd);
+  color: var(--color-accent);
+  border-radius: 8px;
+  padding: 8px 0;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.4s ease, border-color 0.4s ease, color 0.4s ease, transform 0.15s ease;
+}
+
+#theme-toggle:hover {
+  transform: scale(1.05);
+}
+
+#theme-toggle:active {
+  transform: scale(0.95);
+}
+
+#theme-toggle .icon.spinning {
+  animation: theme-spin 0.5s ease-out;
 }
 
 /* ---- Overlay ---- */
@@ -118,9 +190,10 @@ kbd {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(10, 10, 20, 0.75);
+  background: var(--overlay-bg);
   backdrop-filter: blur(4px);
   border-radius: 4px;
+  transition: background 0.4s ease;
 }
 
 .overlay.hidden {
@@ -145,13 +218,14 @@ kbd {
 #overlay-score {
   font-family: 'Courier New', Courier, monospace;
   font-size: 14px;
-  color: #7aa2f7;
+  color: var(--color-accent);
+  transition: color 0.4s ease;
 }
 
 #restart-btn {
   margin-top: 8px;
-  background: #7aa2f7;
-  color: #0f0f17;
+  background: var(--color-accent);
+  color: var(--bg-body);
   border: none;
   border-radius: 6px;
   padding: 10px 28px;
@@ -159,9 +233,9 @@ kbd {
   font-weight: 700;
   cursor: pointer;
   letter-spacing: 1px;
-  transition: background 0.15s;
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
 #restart-btn:hover {
-  background: #9bbdff;
+  filter: brightness(1.2);
 }

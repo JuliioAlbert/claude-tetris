@@ -28,6 +28,8 @@ const PIECES = [
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
 
+let gridColor = '#22222e';
+
 const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
 const nextCanvas = document.getElementById('next-canvas');
@@ -169,7 +171,7 @@ function drawBlock(context, x, y, colorIndex, size, alpha) {
 }
 
 function drawGrid() {
-  ctx.strokeStyle = '#22222e';
+  ctx.strokeStyle = gridColor;
   ctx.lineWidth = 0.5;
   for (let c = 1; c < COLS; c++) {
     ctx.beginPath();
@@ -300,5 +302,17 @@ document.addEventListener('keydown', e => {
 });
 
 restartBtn.addEventListener('click', init);
+
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = themeToggle.querySelector('.icon');
+
+themeToggle.addEventListener('click', () => {
+  document.body.classList.toggle('light-theme');
+  const isLight = document.body.classList.contains('light-theme');
+  themeIcon.textContent = isLight ? '☽' : '☀';
+  gridColor = isLight ? '#c0c0d8' : '#22222e';
+  themeIcon.classList.add('spinning');
+  themeIcon.addEventListener('animationend', () => themeIcon.classList.remove('spinning'), { once: true });
+});
 
 init();
