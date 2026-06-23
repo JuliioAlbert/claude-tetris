@@ -13,6 +13,11 @@ const COLORS = [
   '#e57373', // Z - red
   '#7986cb', // J - indigo
   '#ffb74d', // L - orange
+  '#f06292', // + cruz   - rosa
+  '#4db6ac', // U        - teal
+  '#aed581', // Y        - lima
+  '#fff176', // 1×1 single (recompensa) - amarillo
+  '#90a4ae', // 3×3 hueca (reto)        - gris azulado
 ];
 
 const PIECES = [
@@ -24,9 +29,18 @@ const PIECES = [
   [[5,5,0],[0,5,5],[0,0,0]],                  // Z
   [[6,0,0],[6,6,6],[0,0,0]],                  // J
   [[0,0,7],[7,7,7],[0,0,0]],                  // L
+  // Piezas especiales
+  [[0,8,0],[8,8,8],[0,8,0]],                  // + cruz
+  [[9,0,9],[9,9,9]],                           // U
+  [[0,10],[10,10],[0,10],[0,10]],              // Y
+  [[11]],                                      // 1×1 single (recompensa Tetris)
+  [[12,12,12],[12,0,12],[12,12,12]],           // 3×3 hueca (reto)
 ];
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
+
+const SPECIAL_TYPES = [8, 9, 10, 12]; // +, U, Y, 3×3 hueca
+const SPECIAL_CHANCE = 0.12;
 
 let gridColor = '#22222e';
 
@@ -43,15 +57,23 @@ const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+let rewardPending = false;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
 }
 
-function randomPiece() {
-  const type = Math.floor(Math.random() * 7) + 1;
+function makePiece(type) {
   const shape = PIECES[type].map(row => [...row]);
   return { type, shape, x: Math.floor(COLS / 2) - Math.floor(shape[0].length / 2), y: 0 };
+}
+
+function randomPiece() {
+  if (rewardPending) { rewardPending = false; return makePiece(11); }
+  const type = Math.random() < SPECIAL_CHANCE
+    ? SPECIAL_TYPES[Math.floor(Math.random() * SPECIAL_TYPES.length)]
+    : Math.floor(Math.random() * 7) + 1;
+  return makePiece(type);
 }
 
 function collide(shape, ox, oy) {
@@ -106,6 +128,7 @@ function clearLines() {
     }
   }
   if (cleared) {
+    if (cleared === 4) rewardPending = true;
     lines += cleared;
     score += (LINE_SCORES[cleared] || 0) * level;
     level = Math.floor(lines / 10) + 1;
@@ -266,6 +289,7 @@ function init() {
   level = 1;
   paused = false;
   gameOver = false;
+  rewardPending = false;
   dropInterval = 1000;
   dropAccum = 0;
   lastTime = performance.now();
