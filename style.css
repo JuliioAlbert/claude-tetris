@@ -239,3 +239,105 @@ kbd {
 #restart-btn:hover {
   filter: brightness(1.2);
 }
+
+#restart-btn.hidden {
+  display: none;
+}
+
+/* ---- Pause menu ---- */
+#pause-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+#pause-menu.hidden {
+  display: none;
+}
+
+#resume-btn,
+#restart-pause-btn {
+  width: 160px;
+  background: var(--color-accent);
+  color: var(--bg-body);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+#resume-btn:hover {
+  filter: brightness(1.2);
+}
+
+#restart-pause-btn {
+  background: transparent;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+}
+
+#restart-pause-btn:hover {
+  background: var(--color-accent);
+  color: var(--bg-body);
+}
+
+.pause-level-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pause-level-row label {
+  color: var(--color-label);
+  letter-spacing: 1px;
+  font-size: 12px;
+}
+
+#start-level-select {
+  background: var(--bg-kbd);
+  color: var(--color-text);
+  border: 1px solid var(--border-kbd);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+}
+
+.pause-controls {
+  margin-top: 4px;
+  text-align: left;
+  width: 160px;
+}
+
+.pause-controls-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--color-label);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  transition: color 0.4s ease;
+}
+
+.pause-controls ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pause-controls li {
+  font-size: 12px;
+  color: var(--color-controls);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.4s ease;
+}
