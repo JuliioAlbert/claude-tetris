@@ -239,3 +239,39 @@ kbd {
 #restart-btn:hover {
   filter: brightness(1.2);
 }
+
+/* ---- Skin selector ---- */
+.skin-btn-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.skin-btn {
+  background: var(--bg-kbd);
+  border: 1px solid var(--border-kbd);
+  color: var(--color-kbd);
+  border-radius: 5px;
+  padding: 5px 2px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+}
+
+.skin-btn:hover {
+  transform: scale(1.05);
+  filter: brightness(1.15);
+}
+
+.skin-btn:active {
+  transform: scale(0.95);
+}
+
+.skin-btn.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--bg-body);
+}

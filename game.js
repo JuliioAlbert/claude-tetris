@@ -20,6 +20,55 @@ const COLORS = [
   '#90a4ae', // 3×3 hueca (reto)        - gris azulado
 ];
 
+// ---- Skin system ----
+const SKINS = {
+  retro: {
+    colors: COLORS,
+  },
+  neon: {
+    colors: [
+      null,
+      '#00f0ff', // I - electric cyan
+      '#ffe600', // O - electric yellow
+      '#cc00ff', // T - electric violet
+      '#00ff66', // S - electric green
+      '#ff2244', // Z - electric red
+      '#4444ff', // J - electric blue
+      '#ff8800', // L - electric orange
+      '#ff00cc', // + cruz - electric pink
+      '#00ffcc', // U - electric teal
+      '#aaff00', // Y - electric lime
+      '#ffff00', // 1×1 - electric yellow bright
+      '#8888ff', // 3×3 - electric periwinkle
+    ],
+  },
+  pastel: {
+    colors: [
+      null,
+      '#a8e6f0', // I - soft cyan
+      '#fff3b0', // O - soft yellow
+      '#ddb8f0', // T - soft lavender
+      '#b8f0c0', // S - soft mint
+      '#f0b8b8', // Z - soft rose
+      '#b8bcf0', // J - soft periwinkle
+      '#f0d0a0', // L - soft peach
+      '#f0b8d8', // + cruz - soft pink
+      '#a8f0e8', // U - soft aqua
+      '#d8f0a8', // Y - soft lime
+      '#f8f4a0', // 1×1 - soft lemon
+      '#c8d8e8', // 3×3 - soft steel
+    ],
+  },
+  pixel: {
+    colors: COLORS,
+  },
+};
+
+const SKIN_NAMES = ['retro', 'neon', 'pastel', 'pixel'];
+const SKIN_LABELS = { retro: 'Retro', neon: 'Neon', pastel: 'Pastel', pixel: 'Pixel' };
+
+let currentSkin = localStorage.getItem('tetris.skin') || 'retro';
+
 const PIECES = [
   null,
   [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]], // I
@@ -183,13 +232,79 @@ function updateHUD() {
 
 function drawBlock(context, x, y, colorIndex, size, alpha) {
   if (!colorIndex) return;
-  const color = COLORS[colorIndex];
+  const skinColors = SKINS[currentSkin].colors;
+  const color = skinColors[colorIndex];
+  const px = x * size + 1;
+  const py = y * size + 1;
+  const sz = size - 2;
+
   context.globalAlpha = alpha ?? 1;
-  context.fillStyle = color;
-  context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
-  // highlight
-  context.fillStyle = 'rgba(255,255,255,0.12)';
-  context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+
+  if (currentSkin === 'neon') {
+    context.shadowColor = color;
+    context.shadowBlur = 10;
+    context.fillStyle = color;
+    context.fillRect(px, py, sz, sz);
+    // inner glow layer
+    context.shadowBlur = 4;
+    context.fillStyle = 'rgba(255,255,255,0.25)';
+    context.fillRect(px + 2, py + 2, sz - 4, sz - 4);
+    context.shadowBlur = 0;
+    context.shadowColor = 'transparent';
+  } else if (currentSkin === 'pastel') {
+    context.fillStyle = color;
+    const r = Math.min(5, sz / 3);
+    if (context.roundRect) {
+      context.beginPath();
+      context.roundRect(px, py, sz, sz, r);
+      context.fill();
+    } else {
+      // Fallback rounded rect via arc path
+      context.beginPath();
+      context.moveTo(px + r, py);
+      context.lineTo(px + sz - r, py);
+      context.arcTo(px + sz, py, px + sz, py + r, r);
+      context.lineTo(px + sz, py + sz - r);
+      context.arcTo(px + sz, py + sz, px + sz - r, py + sz, r);
+      context.lineTo(px + r, py + sz);
+      context.arcTo(px, py + sz, px, py + sz - r, r);
+      context.lineTo(px, py + r);
+      context.arcTo(px, py, px + r, py, r);
+      context.closePath();
+      context.fill();
+    }
+    // subtle border
+    context.strokeStyle = 'rgba(0,0,0,0.10)';
+    context.lineWidth = 1;
+    context.stroke();
+    // soft highlight
+    context.fillStyle = 'rgba(255,255,255,0.30)';
+    context.fillRect(px + 2, py + 2, sz - 4, 3);
+  } else if (currentSkin === 'pixel') {
+    context.fillStyle = color;
+    context.fillRect(px, py, sz, sz);
+    // pixel texture: 3x3 dot grid inside block
+    const dotSize = Math.max(1, Math.floor(sz / 8));
+    const step = Math.floor(sz / 3);
+    context.fillStyle = 'rgba(0,0,0,0.20)';
+    for (let dr = 0; dr < 3; dr++) {
+      for (let dc = 0; dc < 3; dc++) {
+        const dotX = px + step * dc + Math.floor(step / 2) - dotSize;
+        const dotY = py + step * dr + Math.floor(step / 2) - dotSize;
+        context.fillRect(dotX, dotY, dotSize, dotSize);
+      }
+    }
+    // highlight top edge
+    context.fillStyle = 'rgba(255,255,255,0.15)';
+    context.fillRect(px, py, sz, 3);
+  } else {
+    // retro (default)
+    context.fillStyle = color;
+    context.fillRect(px, py, sz, sz);
+    context.fillStyle = 'rgba(255,255,255,0.12)';
+    context.fillRect(px, py, sz, 4);
+  }
+
   context.globalAlpha = 1;
 }
 
@@ -301,6 +416,48 @@ function init() {
   animId = requestAnimationFrame(loop);
 }
 
+// ---- Skin selector UI ----
+function applySkin(skinName) {
+  if (!SKINS[skinName]) return;
+  currentSkin = skinName;
+  localStorage.setItem('tetris.skin', skinName);
+  // Update button active states
+  SKIN_NAMES.forEach(name => {
+    const btn = document.getElementById('skin-btn-' + name);
+    if (btn) btn.classList.toggle('active', name === skinName);
+  });
+  // Repaint immediately if paused or game over
+  if (paused || gameOver) {
+    draw();
+    drawNext();
+  }
+}
+
+function buildSkinSelector() {
+  const section = document.createElement('div');
+  section.className = 'panel-section';
+  const label = document.createElement('span');
+  label.className = 'label';
+  label.textContent = 'SKIN';
+  section.appendChild(label);
+
+  const btnGroup = document.createElement('div');
+  btnGroup.className = 'skin-btn-group';
+
+  SKIN_NAMES.forEach(name => {
+    const btn = document.createElement('button');
+    btn.id = 'skin-btn-' + name;
+    btn.className = 'skin-btn';
+    btn.textContent = SKIN_LABELS[name];
+    if (name === currentSkin) btn.classList.add('active');
+    btn.addEventListener('click', () => applySkin(name));
+    btnGroup.appendChild(btn);
+  });
+
+  section.appendChild(btnGroup);
+  return section;
+}
+
 document.addEventListener('keydown', e => {
   if (e.code === 'KeyP') { togglePause(); return; }
   if (paused || gameOver) return;
@@ -339,5 +496,10 @@ themeToggle.addEventListener('click', () => {
   themeIcon.classList.add('spinning');
   themeIcon.addEventListener('animationend', () => themeIcon.classList.remove('spinning'), { once: true });
 });
+
+// Insert skin selector into panel before the controls section
+const panel = document.querySelector('.panel');
+const controlsSection = panel.querySelector('.controls');
+panel.insertBefore(buildSkinSelector(), controlsSection);
 
 init();
