@@ -31,6 +31,10 @@
           <span class="label">LEVEL</span>
           <span class="value" id="level">1</span>
         </div>
+        <div class="panel-section">
+          <span class="label">COMBO</span>
+          <span class="value" id="combo">0</span>
+        </div>
 
         <div class="panel-section">
           <span class="label">NEXT</span>
@@ -47,6 +51,12 @@
             <li><kbd>P</kbd> pausa</li>
           </ul>
         </div>
+
+        <div class="panel-section">
+          <button id="reset-scores-btn" class="reset-btn" title="Borrar tabla de records">
+            Reset Records
+          </button>
+        </div>
       </aside>
     </div>
 
@@ -54,7 +64,62 @@
       <div class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
+
+        <!-- Name input section (shown only when score qualifies for top 5) -->
+        <div id="name-input-section" class="name-input-section hidden">
+          <p class="name-prompt">¡Entraste al Top 5! Ingresa tu nombre:</p>
+          <input
+            type="text"
+            id="player-name-input"
+            class="player-name-input"
+            maxlength="20"
+            placeholder="Tu nombre"
+            autocomplete="off"
+          />
+          <button id="save-score-btn" class="save-btn">Guardar</button>
+        </div>
+
+        <!-- Highscores table (shown in game over overlay) -->
+        <div id="overlay-highscores" class="overlay-highscores hidden">
+          <p class="hs-title">TOP 5</p>
+          <table id="overlay-hs-table" class="hs-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Score</th>
+                <th>Líneas</th>
+                <th>Combo</th>
+              </tr>
+            </thead>
+            <tbody id="overlay-hs-body"></tbody>
+          </table>
+        </div>
+
         <button id="restart-btn">Reiniciar</button>
+      </div>
+    </div>
+
+    <!-- Start screen overlay (shown before first game) -->
+    <div id="start-overlay" class="overlay">
+      <div class="overlay-box start-box">
+        <p id="start-title" class="start-title">TETRIS</p>
+        <div id="start-highscores" class="overlay-highscores">
+          <p class="hs-title">TOP 5</p>
+          <table class="hs-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Score</th>
+                <th>Líneas</th>
+                <th>Combo</th>
+              </tr>
+            </thead>
+            <tbody id="start-hs-body"></tbody>
+          </table>
+        </div>
+        <button id="start-btn" class="save-btn start-play-btn">¡Jugar!</button>
       </div>
     </div>
   </div>

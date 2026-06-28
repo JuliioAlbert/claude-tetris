@@ -239,3 +239,142 @@ kbd {
 #restart-btn:hover {
   filter: brightness(1.2);
 }
+
+/* ---- Name input section ---- */
+.name-input-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.name-prompt {
+  font-size: 13px;
+  color: var(--color-text);
+  opacity: 0.85;
+}
+
+.player-name-input {
+  background: var(--bg-surface);
+  border: 1px solid var(--color-accent);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--color-text);
+  width: 180px;
+  text-align: center;
+  outline: none;
+  transition: background 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+}
+
+.player-name-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 6px rgba(122, 162, 247, 0.4);
+}
+
+.save-btn {
+  background: var(--color-accent);
+  color: var(--bg-body);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+.save-btn:hover {
+  filter: brightness(1.2);
+}
+
+/* ---- Highscores table ---- */
+.overlay-highscores {
+  width: 100%;
+  max-width: 340px;
+}
+
+.hs-title {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--color-label);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.hs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  color: var(--color-text);
+}
+
+.hs-table th {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--color-label);
+  padding: 3px 6px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.hs-table td {
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--border-color);
+  opacity: 0.9;
+}
+
+.hs-table tr.hs-highlight td {
+  color: var(--color-accent);
+  font-weight: 700;
+  opacity: 1;
+}
+
+/* ---- Reset button ---- */
+.reset-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--color-label);
+  border-radius: 6px;
+  padding: 6px 0;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.reset-btn:hover {
+  border-color: #e57373;
+  color: #e57373;
+  background: rgba(229, 115, 115, 0.08);
+}
+
+/* ---- Start screen ---- */
+.start-box {
+  gap: 16px;
+  padding: 24px;
+}
+
+.start-title {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 10px;
+  color: var(--color-accent);
+  text-shadow: var(--title-shadow);
+}
+
+.start-play-btn {
+  margin-top: 4px;
+  padding: 12px 36px;
+  font-size: 15px;
+}
+
+/* ---- Hidden utility ---- */
+.hidden {
+  display: none !important;
+}
